@@ -1,0 +1,14 @@
+Source: libtertiusqbit-application-model-api-fcgi-socket-perl
+Section: perl
+Priority: extra
+Maintainer: Dmitry Lukiyanchuk <wtertius@gmail.com>
+Build-Depends: debhelper (>= 8.0.0), perl, libtertiusqbit-perl, libtertiusqbit-application-model-api-perl
+Standards-Version: 3.9.4
+
+Package: libtertiusqbit-application-model-api-fcgi-socket-perl
+Architecture: all
+Depends: ${shlibs:Depends}, ${misc:Depends}, ${perl:Depends}, perl, libtertiusqbit-perl, libtertiusqbit-application-model-api-perl, libfcgi-client-perl, libhttp-message-perl
+Conflicts: libqbit-application-model-api-fcgi-socket-perl
+Replaces: libqbit-application-model-api-fcgi-socket-perl
+Description: Base class for construct HTTP REST API connectors.
+ Base class for construct HTTP REST API connectors.

@@ -28,13 +28,12 @@ sub request {
     $socket or die $!;
 
     my $client = FCGI::Client::Connection->new(sock => $socket, timeout => $self->get_option('timeout', 7));
-    my $query_string = join('&', map {$_ . '=' . uri_escape($params{$_})} keys(%params)) || '';
 
     my ($stdout, $stderr) = $client->request(
         {
             REQUEST_METHOD => 'GET',
             REQUEST_URI    => $uri,
-            QUERY_STRING   => $query_string,
+            QUERY_STRING   => $self->_query_string(%params),
             SCHEME         => 'https',
             SERVER_NAME    => hostname(),
             SERVER_PORT    => 443,
@@ -76,16 +75,27 @@ sub get {
 
     $self->log(
         {
-            request  => $response->request->as_string,
-            url      => $response->request->uri->as_string,
-            status   => $response->code,
-            response => $response->headers->as_string,
+            request      => $response->request->as_string,
+            socket       => $self->get_option('socket'),
+            uri          => $uri,
+            query_string => $self->_query_string(%params),
+            status       => $response->code,
+            response     => $response->headers->as_string,
             (defined($content) ? (content => $content) : (error => $response->status_line)),
         }
     ) if $self->can('log');
 
-    throw Exception::API::FCGI::Socket $response unless defined($content);
+    throw Exception::API::FCGI::Socket $response->status_line unless defined($content);
+
+    utf8::decode($content);
+
     return $content;
+}
+
+sub _query_string {
+    my ($self, %params) = @_;
+
+    return join('&', map {$_ . '=' . uri_escape($params{$_})} keys(%params)) || '';
 }
 
 TRUE;

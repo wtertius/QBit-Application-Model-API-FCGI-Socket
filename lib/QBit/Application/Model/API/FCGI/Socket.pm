@@ -11,18 +11,12 @@ use IO::Socket;
 use FCGI::Client;
 use HTTP::Response;
 
-sub init {
-    my ($self) = @_;
+sub request {
+    my ($self, $uri, %params) = @_;
 
     throw Exception::API::FCGI::Socket gettext("Option 'socket' isn't defined for %s", ref($self))
       unless defined($self->get_option('socket'));
     throw Exception::API::FCGI::Socket gettext('No socket for %s', ref($self)) unless -S $self->get_option('socket');
-
-    $self->SUPER::init();
-}
-
-sub request {
-    my ($self, $uri, %params) = @_;
 
     my $socket = IO::Socket::UNIX->new("Type" => SOCK_STREAM, Peer => $self->get_option('socket'));
     $socket or die $!;

@@ -75,7 +75,6 @@ sub get {
 
     $self->log(
         {
-            request      => $response->request->as_string,
             socket       => $self->get_option('socket'),
             uri          => $uri,
             query_string => $self->_query_string(%params),
